@@ -17,7 +17,7 @@ function interval(func, wait, times){	//a better alternative to setInterval from
     setTimeout(interv, wait);
 };
 
-function drawable(xPos = 0, yPos = 0, wideness = 10, highness = 10, colour = "grey")
+function drawable(xPos = 0, yPos = 0, wideness = 10, highness = 10, colour = "grey") //superclass to everything drawable on screen
 {
     this.x = xPos;
     this.y = yPos;
@@ -30,32 +30,59 @@ function drawable(xPos = 0, yPos = 0, wideness = 10, highness = 10, colour = "gr
         context.fillStyle = this.color;
         context.fillRect(this.x, this.y, this.width, this.height);
     }
+    
+    this.contains = function(xCoord, yCoord)//check whether this drawable contains the specified point
+    {
+        if((xCoord >= this.x) && (xCoord <= (this.x + this.width)) && (yCoord >= this.y) && (yCoord <= (this.y + this.height)))
+        {
+            return true;
+        }
+        else return false;
+    }
 }
 
-function box(xPos, yPos, wideness, highness, colour, velX = 0, velY = 0)
+function box(xPos, yPos, wideness, highness, colour, velX = 0, velY = 0)//box subclass declaration
 {
-    drawable.call(this, xPos, yPos, wideness, highness, colour);
+    drawable.call(this, xPos, yPos, wideness, highness, colour);//constructor
     this.vx = velX;
     this.vy = velY;
 }
-box.prototype = Object.create(drawable.prototype);
+box.prototype = Object.create(drawable.prototype);//box inherits from drawable
 box.prototype.constructor = box;
 
-function menu(xPos, yPos, wideness, highness, colour)
+function menu(xPos, yPos, wideness, highness, colour)//main menu subclass declaration
 {    
-    drawable.call(this, xPos, yPos, wideness, highness, colour);
+    drawable.call(this, xPos, yPos, wideness, highness, colour);//constructor
     
     var menuElements = [];
     
-    this.bg = new box(this.x, this.y, this.width, this.height, this.color);
+    this.bg = new box(this.x, this.y, this.width, this.height, this.color);//menu has member 'bg' which is a box
     
-    this.pushElement = function(thingToAdd)
+    this.pushElement = function(thingToAdd)//dynamically push elements onto the menu
     {
-        if(thingToAdd instanceof drawable)
+        var newElement = thingToAdd;
+        if(newElement instanceof drawable)
         {
-            menuElements.push(thingToAdd);
+            newElement.x = newElement.x + this.x;//new menu elements are defined w/respect to the origin of the menu, not the screen
+            newElement.y = newElement.y + this.y;
+            
+            menuElements.push(newElement);
+            return (menuElements.length - 1);//return the position of the new element
         }
-        else throw "notDrawable";
+        else return "notDrawable";
+    }
+    
+    this.removeElement = function(index)//remove selected element
+    {
+        if (index > -1)
+        {
+            menuElements.splice(index, 1);
+        }
+    }
+    
+    this.getElement = function(index)//get specific element from index
+    {
+        return menuElements[index];
     }
     
     this.draw = function(context)
@@ -68,4 +95,4 @@ function menu(xPos, yPos, wideness, highness, colour)
         }
     }
 }
-menu.prototype = Object.create(drawable.prototype);
+menu.prototype = Object.create(drawable.prototype);//menu inherits from drawable
