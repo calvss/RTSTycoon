@@ -47,7 +47,7 @@ function mouseDown()
     mouse.x = event.offsetX;
 	mouse.y = event.offsetY;
     
-    var num = menuBar.getElementCount();
+    var num = menuBar.getElementCount();//check mouseclicks at menuBar
     var element = null;
     for(i = 0; i < num; i++)
     {
@@ -61,4 +61,10 @@ function mouseDown()
             }
         }
     }
+    
+    if(bob.contains(mouse.x, mouse.y))
+    {
+        console.log("inside");
+    }
+    else console.log("outside");
 }

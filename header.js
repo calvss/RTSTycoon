@@ -62,6 +62,15 @@ function circle(xPos, yPos, rad, colour, velX = 0, velY = 0)
         context.fillStyle = this.color;
         context.fill();
     }
+    
+    this.contains = function(xCoord, yCoord)//check whether this drawable contains the specified point
+    {
+        if(Math.pow((Math.pow(xCoord - this.radius - this.x,2) + Math.pow(yCoord - this.radius - this.y,2)),0.5) <= this.radius)
+        {
+            return true;
+        }
+        else return false;
+    }
 }
 circle.prototype = Object.create(drawable.prototype);//circle inherits from drawable
 circle.prototype.constructor = circle;
