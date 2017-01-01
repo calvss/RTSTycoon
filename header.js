@@ -55,6 +55,7 @@ function menu(xPos, yPos, wideness, highness, colour)//main menu subclass declar
     drawable.call(this, xPos, yPos, wideness, highness, colour);//constructor
     
     var menuElements = [];
+    var elementCount = 0;
     
     this.bg = new box(this.x, this.y, this.width, this.height, this.color);//menu has member 'bg' which is a box
     
@@ -67,6 +68,8 @@ function menu(xPos, yPos, wideness, highness, colour)//main menu subclass declar
             newElement.y = newElement.y + this.y;
             
             menuElements.push(newElement);
+            elementCount++;
+            
             return (menuElements.length - 1);//return the position of the new element
         }
         else return "notDrawable";
@@ -78,12 +81,18 @@ function menu(xPos, yPos, wideness, highness, colour)//main menu subclass declar
         {
             menuElements[index] = undefined;
             menuElements.splice(index, 1);
+            elementCount--;
         }
     }
     
     this.getElement = function(index)//get specific element from index
     {
         return menuElements[index];
+    }
+    
+    this.getElementCount = function()
+    {
+        return elementCount;
     }
     
     this.draw = function(context)
