@@ -76,6 +76,7 @@ function menu(xPos, yPos, wideness, highness, colour)//main menu subclass declar
     {
         if (index > -1)
         {
+            menuElements[index] = undefined;
             menuElements.splice(index, 1);
         }
     }
@@ -96,3 +97,13 @@ function menu(xPos, yPos, wideness, highness, colour)//main menu subclass declar
     }
 }
 menu.prototype = Object.create(drawable.prototype);//menu inherits from drawable
+
+function mob(xPos, yPos, wideness, highness, colour, velX = 0, velY = 0, speed)
+{
+    drawable.call(this, xPos, yPos, wideness, highness, colour);//constructor
+    
+    this.vx = velX;
+    this.vy = velY;
+    this.moveSpeed = speed;
+}
+mob.prototype = Object.create(drawable.prototype);//mob inherits from drawable
