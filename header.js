@@ -50,6 +50,22 @@ function box(xPos, yPos, wideness, highness, colour, velX = 0, velY = 0)//box su
 box.prototype = Object.create(drawable.prototype);//box inherits from drawable
 box.prototype.constructor = box;
 
+function circle(xPos, yPos, rad, colour, velX = 0, velY = 0)
+{
+    drawable.call(this, xPos, yPos, 2*rad, 2*rad, colour);
+    
+    this.radius = rad;
+    
+    this.draw = function(context)
+    {
+        context.arc(this.x + this.radius, this.y + this.radius, this.radius, 0, 2*Math.PI);
+        context.fillStyle = this.color;
+        context.fill();
+    }
+}
+circle.prototype = Object.create(drawable.prototype);//circle inherits from drawable
+circle.prototype.constructor = circle;
+
 function menu(xPos, yPos, wideness, highness, colour)//main menu subclass declaration
 {    
     drawable.call(this, xPos, yPos, wideness, highness, colour);//constructor
@@ -62,7 +78,7 @@ function menu(xPos, yPos, wideness, highness, colour)//main menu subclass declar
     this.pushElement = function(thingToAdd)//dynamically push elements onto the menu
     {
         var newElement = thingToAdd;
-        if(newElement instanceof drawable)
+        if("draw" in newElement)//only push objects that can be drawn
         {
             newElement.x = newElement.x + this.x;//new menu elements are defined w/respect to the origin of the menu, not the screen
             newElement.y = newElement.y + this.y;
@@ -106,6 +122,7 @@ function menu(xPos, yPos, wideness, highness, colour)//main menu subclass declar
     }
 }
 menu.prototype = Object.create(drawable.prototype);//menu inherits from drawable
+menu.prototype.constructor = menu;
 
 function mob(xPos, yPos, wideness, highness, colour, velX = 0, velY = 0, speed)
 {
@@ -116,3 +133,4 @@ function mob(xPos, yPos, wideness, highness, colour, velX = 0, velY = 0, speed)
     this.moveSpeed = speed;
 }
 mob.prototype = Object.create(drawable.prototype);//mob inherits from drawable
+mob.prototype.constructor = mob;
