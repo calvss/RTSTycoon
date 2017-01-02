@@ -17,13 +17,14 @@ function interval(func, wait, times){	//a better alternative to setInterval from
     setTimeout(interv, wait);
 };
 
-function drawable(xPos = 0, yPos = 0, wideness = 10, highness = 10, colour = "grey") //superclass to everything drawable on screen
+function drawable(xPos = 0, yPos = 0, wideness = 10, highness = 10, colour = "grey", followsTheMouse = false) //superclass to everything drawable on screen
 {
     this.x = xPos;
     this.y = yPos;
     this.width = wideness;
     this.height = highness;
     this.color = colour;
+    this.followsMouse = followsTheMouse;
     
     this.draw = function(context)
     {
@@ -41,16 +42,16 @@ function drawable(xPos = 0, yPos = 0, wideness = 10, highness = 10, colour = "gr
     }
 }
 
-function box(xPos, yPos, wideness, highness, colour, velX = 0, velY = 0)//box subclass declaration
+function box(xPos, yPos, wideness, highness, colour, followsTheMouse = false, velX = 0, velY = 0)//box subclass declaration
 {
-    drawable.call(this, xPos, yPos, wideness, highness, colour);//constructor
+    drawable.call(this, xPos, yPos, wideness, highness, colour, followsTheMouse);//constructor
     this.vx = velX;
     this.vy = velY;
 }
 box.prototype = Object.create(drawable.prototype);//box inherits from drawable
 box.prototype.constructor = box;
 
-function circle(xPos, yPos, rad, colour, velX = 0, velY = 0)
+function circle(xPos, yPos, rad, colour, followsTheMouse = false, velX = 0, velY = 0)
 {
     drawable.call(this, xPos, yPos, 2*rad, 2*rad, colour);
     
@@ -75,9 +76,9 @@ function circle(xPos, yPos, rad, colour, velX = 0, velY = 0)
 circle.prototype = Object.create(drawable.prototype);//circle inherits from drawable
 circle.prototype.constructor = circle;
 
-function menu(xPos, yPos, wideness, highness, colour)//main menu subclass declaration
+function menu(xPos, yPos, wideness, highness, colour, followsTheMouse = false)//main menu subclass declaration
 {    
-    drawable.call(this, xPos, yPos, wideness, highness, colour);//constructor
+    drawable.call(this, xPos, yPos, wideness, highness, colour, followsTheMouse);//constructor
     
     var menuElements = [];
     var elementCount = 0;
@@ -133,9 +134,9 @@ function menu(xPos, yPos, wideness, highness, colour)//main menu subclass declar
 menu.prototype = Object.create(drawable.prototype);//menu inherits from drawable
 menu.prototype.constructor = menu;
 
-function mob(xPos, yPos, wideness, highness, colour, velX = 0, velY = 0, speed)
+function mob(xPos, yPos, wideness, highness, colour, followsTheMouse = false, velX = 0, velY = 0, speed = 0)
 {
-    drawable.call(this, xPos, yPos, wideness, highness, colour);//constructor
+    drawable.call(this, xPos, yPos, wideness, highness, colour, followsTheMouse);//constructor
     
     this.vx = velX;
     this.vy = velY;
