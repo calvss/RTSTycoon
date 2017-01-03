@@ -10,6 +10,10 @@ var menuHeight = 100;
 
 var world = new box(0, 0, canvas.width, canvas.height, "darkkhaki");
 var menuBar = new menu(0, canvas.height - menuHeight, canvas.width, menuHeight, "grey");
+var activeMenu = menuBar;
+
+var units = [];
+var buildings = [];
 
 interval(draw, 17); //60FPS WOOT
 interval(logic, 10);//100 logic ticks per second
@@ -23,8 +27,6 @@ but2.onClick = function()
 }
 
 var button2Pointer = menuBar.pushElement(but2);
-
-var bob = new circle(0, 0, 20, "grey");
 
 menuBar.getElement(button2Pointer).onClick = function()
 {
@@ -41,12 +43,21 @@ function logic()
 function draw()
 {
     world.draw(context);
-    menuBar.draw(context);
-    bob.draw(context);
+    activeMenu.draw(context);
     
     if(mouse.unitSelected != -1)
     {
         mouse.unitSelected.draw(context);
+    }
+    
+    for(i = 0; i < units.length; i++)
+    {
+        units[i].draw(context);
+    }
+    
+    for(i = 0; i < buildings.length; i++)
+    {
+        buildings[i].draw(context);
     }
 }
 
@@ -73,16 +84,26 @@ function mouseDown()
     if(mouse.unitSelected != -1)
     {
         mouse.unitSelected.followsMouse = false;
-    //    mouse.unitSelected = -1;
+        
+        if(mouse.unitSelected instanceof building)
+        {
+            buildings.push(mouse.unitSelected);
+        }
+        else
+        {
+            units.push(mouse.unitSelected);
+        }
+        
+        mouse.unitSelected = -1;
     }
     else
     {
-        //check mouseclicks at menuBar
-        var num = menuBar.getElementCount();
+        //check mouseclicks at current menu
+        var num = activeMenu.getElementCount();
         var element = null;
         for(i = 0; i < num; i++)
         {
-            element = menuBar.getElement(i)
+            element = activeMenu.getElement(i);
             
             if(element.contains(mouse.x, mouse.y))
             {
@@ -93,11 +114,4 @@ function mouseDown()
             }
         }
     }
-    
-    
-    if(bob.contains(mouse.x, mouse.y))
-    {
-        console.log("inside");
-    }
-    else console.log("outside");
 }

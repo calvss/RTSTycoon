@@ -144,3 +144,8 @@ function mob(xPos, yPos, wideness, highness, colour, followsTheMouse = false, ve
 }
 mob.prototype = Object.create(drawable.prototype);//mob inherits from drawable
 mob.prototype.constructor = mob;
+
+function building(xPos, yPos, wideness, highness, colour, followsTheMouse = false)
+{
+    drawable.call(this, xPos, yPos, wideness, highness, colour, followsTheMouse);//constructor
+}
