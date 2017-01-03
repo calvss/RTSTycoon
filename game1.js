@@ -10,7 +10,30 @@ var menuHeight = 100;
 
 var world = new box(0, 0, canvas.width, canvas.height, "darkkhaki");
 var menuBar = new menu(0, canvas.height - menuHeight, canvas.width, menuHeight, "grey");
-var activeMenu = menuBar;
+{
+    var button1Pointer = menuBar.pushElement(new box(15, 15, 20, 20, "green"));
+
+    var but2 = new box(100, 15, 25, 25, "blue");
+    but2.onClick = function()
+    {
+        console.log("wew");
+    }
+
+    var button2Pointer = menuBar.pushElement(but2);
+
+    menuBar.getElement(button2Pointer).onClick = function()
+    {
+        if(mouse.unitSelected == -1)
+        {
+            mouse.unitSelected = new mob(100, 100, 20, 20, "blue", true);
+            
+            tempButton = new box(10, 500, 30, 30, "red");
+            //tempButton.onClick
+            mouse.unitSelected.menuItems.push(tempButton);
+        }
+    }
+}
+var activeMenu = clone(menuBar);
 
 var units = [];
 var buildings = [];
@@ -18,23 +41,7 @@ var buildings = [];
 interval(draw, 17); //60FPS WOOT
 interval(logic, 10);//100 logic ticks per second
 
-var button1Pointer = menuBar.pushElement(new box(15, 15, 20, 20, "green"));
 
-var but2 = new box(100, 15, 25, 25, "blue");
-but2.onClick = function()
-{
-    console.log("wew");
-}
-
-var button2Pointer = menuBar.pushElement(but2);
-
-menuBar.getElement(button2Pointer).onClick = function()
-{
-    if(mouse.unitSelected == -1)
-    {
-        mouse.unitSelected = new box(100, 100, 20, 20, "blue", true);
-    }
-}
 
 function logic()
 {				
@@ -98,20 +105,64 @@ function mouseDown()
     }
     else
     {
-        //check mouseclicks at current menu
-        var num = activeMenu.getElementCount();
-        var element = null;
-        for(i = 0; i < num; i++)
+        let clickedOnThing = false;
+        
+        if(clickedOnThing == false)
         {
-            element = activeMenu.getElement(i);
-            
-            if(element.contains(mouse.x, mouse.y))
+            //check mouseclicks at current menu
+            var num = activeMenu.getElementCount();
+            var element = null;
+            for(i = 0; i < num; i++)
             {
-                if("onClick" in element)
+                element = activeMenu.getElement(i);
+                
+                if(element.contains(mouse.x, mouse.y))
                 {
-                    element.onClick();
+                    if("onClick" in element)
+                    {
+                        element.onClick();
+                        clickedOnThing = true;
+                        break;
+                    }
                 }
             }
+        }
+        
+        if(clickedOnThing == false)
+        {
+            //check mouseclicks at units
+            var unitCount = units.length;
+            for(i = 0; i < unitCount; i++)
+            {
+                if(units[i].contains(mouse.x, mouse.y))
+                {
+                    activeMenu.menuElements = units[i].menuItems;
+                    console.log(activeMenu);
+                    clickedOnThing = true;
+                    break;
+                }   
+            }
+        }
+        
+        if(clickedOnThing == false)
+        {
+            //check mouseclicks at buildings
+            var bldgCount = buildings.length;
+            for(i = 0; i < bldgCount; i++)
+            {
+                if(buildings[i].contains(mouse.x, mouse.y))
+                {
+                    activeMenu.menuElements = buildings[i].menuItems;
+                    clickedOnThing = true;
+                    break;
+                }   
+            }
+        }
+        
+        if(clickedOnThing == false)//if nothing else was clicked
+        {
+            activeMenu = clone(menuBar);
+            //console.log(menuBar);
         }
     }
 }

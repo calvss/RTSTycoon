@@ -15,7 +15,19 @@ function interval(func, wait, times){	//a better alternative to setInterval from
     }(wait, times);
 
     setTimeout(interv, wait);
-};
+}
+
+function clone(obj)
+{
+    if(obj == null || typeof(obj) != 'object')
+        return obj;
+
+    var temp = new obj.constructor(); 
+    for(var key in obj)
+        temp[key] = clone(obj[key]);
+
+    return temp;
+}
 
 function drawable(xPos = 0, yPos = 0, wideness = 10, highness = 10, colour = "grey", followsTheMouse = false) //superclass to everything drawable on screen
 {
@@ -80,8 +92,7 @@ function menu(xPos, yPos, wideness, highness, colour, followsTheMouse = false)//
 {    
     drawable.call(this, xPos, yPos, wideness, highness, colour, followsTheMouse);//constructor
     
-    var menuElements = [];
-    var elementCount = 0;
+    this.menuElements = [];
     
     this.bg = new box(this.x, this.y, this.width, this.height, this.color);//menu has member 'bg' which is a box
     
@@ -93,10 +104,9 @@ function menu(xPos, yPos, wideness, highness, colour, followsTheMouse = false)//
             newElement.x = newElement.x + this.x;//new menu elements are defined w/respect to the origin of the menu, not the screen
             newElement.y = newElement.y + this.y;
             
-            menuElements.push(newElement);
-            elementCount++;
+            this.menuElements.push(newElement);
             
-            return (menuElements.length - 1);//return the position of the new element
+            return (this.menuElements.length - 1);//return the position of the new element
         }
         else return "notDrawable";
     }
@@ -105,42 +115,43 @@ function menu(xPos, yPos, wideness, highness, colour, followsTheMouse = false)//
     {
         if (index > -1)
         {
-            menuElements[index] = undefined;
-            menuElements.splice(index, 1);
-            elementCount--;
+            this.menuElements[index] = undefined;
+            this.menuElements.splice(index, 1);
         }
     }
     
     this.getElement = function(index)//get specific element from index
     {
-        return menuElements[index];
+        return this.menuElements[index];
     }
     
     this.getElementCount = function()
     {
-        return elementCount;
+        return this.menuElements.length;
     }
     
     this.draw = function(context)
     {
         this.bg.draw(context);
         
-        for(i = 0; i < menuElements.length; i++)
+        for(i = 0; i < this.menuElements.length; i++)
         {
-            menuElements[i].draw(context);
+            this.menuElements[i].draw(context);
         }
     }
 }
 menu.prototype = Object.create(drawable.prototype);//menu inherits from drawable
 menu.prototype.constructor = menu;
 
-function mob(xPos, yPos, wideness, highness, colour, followsTheMouse = false, velX = 0, velY = 0, speed = 0)
+function mob(xPos, yPos, wideness, highness, colour, followsTheMouse = false, activeness = false, velX = 0, velY = 0, speed = 0)
 {
     drawable.call(this, xPos, yPos, wideness, highness, colour, followsTheMouse);//constructor
     
     this.vx = velX;
     this.vy = velY;
     this.moveSpeed = speed;
+    this.activeUnit = activeness;
+    this.menuItems = [];
 }
 mob.prototype = Object.create(drawable.prototype);//mob inherits from drawable
 mob.prototype.constructor = mob;
