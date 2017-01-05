@@ -14,10 +14,6 @@ var menuBar = new menu(0, canvas.height - menuHeight, canvas.width, menuHeight, 
     var button1Pointer = menuBar.pushElement(new box(15, 15, 20, 20, "green"));
 
     var but2 = new box(100, 15, 25, 25, "blue");
-    but2.onClick = function()
-    {
-        console.log("wew");
-    }
 
     var button2Pointer = menuBar.pushElement(but2);
 
@@ -28,7 +24,10 @@ var menuBar = new menu(0, canvas.height - menuHeight, canvas.width, menuHeight, 
             mouse.unitSelected = new mob(100, 100, 20, 20, "blue", true);
             
             tempButton = new box(10, 500, 30, 30, "red");
-            //tempButton.onClick
+            tempButton.onClick = function()
+            {
+                console.log("yay");
+            }
             mouse.unitSelected.menuItems.push(tempButton);
         }
     }
@@ -88,6 +87,8 @@ function mouseDown()
     mouse.x = event.offsetX;
 	mouse.y = event.offsetY;
     
+    //console.log(menuBar);
+    
     if(mouse.unitSelected != -1)
     {
         mouse.unitSelected.followsMouse = false;
@@ -105,9 +106,9 @@ function mouseDown()
     }
     else
     {
-        let clickedOnThing = false;
+        let clickedOnWorld = true;
         
-        if(clickedOnThing == false)
+        if(clickedOnWorld == true)
         {
             //check mouseclicks at current menu
             var num = activeMenu.getElementCount();
@@ -121,14 +122,14 @@ function mouseDown()
                     if("onClick" in element)
                     {
                         element.onClick();
-                        clickedOnThing = true;
+                        clickedOnWorld = false;
                         break;
                     }
                 }
             }
         }
         
-        if(clickedOnThing == false)
+        if(clickedOnWorld == true)
         {
             //check mouseclicks at units
             var unitCount = units.length;
@@ -137,14 +138,14 @@ function mouseDown()
                 if(units[i].contains(mouse.x, mouse.y))
                 {
                     activeMenu.menuElements = units[i].menuItems;
-                    console.log(activeMenu);
-                    clickedOnThing = true;
+                    //console.log(activeMenu);
+                    clickedOnWorld = false;
                     break;
                 }   
             }
         }
         
-        if(clickedOnThing == false)
+        if(clickedOnWorld == true)
         {
             //check mouseclicks at buildings
             var bldgCount = buildings.length;
@@ -153,13 +154,21 @@ function mouseDown()
                 if(buildings[i].contains(mouse.x, mouse.y))
                 {
                     activeMenu.menuElements = buildings[i].menuItems;
-                    clickedOnThing = true;
+                    clickedOnWorld = false;
                     break;
                 }   
             }
         }
         
-        if(clickedOnThing == false)//if nothing else was clicked
+        if(clickedOnWorld == true)
+        {
+            if(activeMenu.contains(mouse.x, mouse.y))
+            {
+                clickedOnWorld = false;
+            }
+        }
+        
+        if(clickedOnWorld == true)//if nothing else was clicked
         {
             activeMenu = clone(menuBar);
             //console.log(menuBar);
